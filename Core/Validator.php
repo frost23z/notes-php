@@ -1,5 +1,6 @@
 <?php
 
+namespace Core;
 class Validator
 {
     public static function validateNoteData($data): array

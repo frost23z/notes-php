@@ -1,10 +1,10 @@
-<?php require "views/partials/header.php" ?>
-<?php require "views/partials/nav.php" ?>
-<?php require "views/partials/banner.php" ?>
+<?php view("partials/header.php") ?>
+<?php view("partials/nav.php") ?>
+<?php view("partials/banner.php", ['heading' => $heading]) ?>
     <main>
 
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <form method="POST" action="/create">
+            <form method="POST" action="/notes">
                 <div class="space-y-12">
                     <div class="border-b border-white/10 pb-12">
 
@@ -14,8 +14,8 @@
                                 <label for="title" class="block text-sm/6 font-medium text-white">Title</label>
                                 <div class="mt-2">
                                     <div class="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500">
-                                        <input id="title" type="text" name="title" placeholder="janesmith"
-                                               $value="<?= $title ?? '' ?>"
+                                        <input id="title" type="text" name="title" placeholder="Enter note title"
+                                               value="<?= $title ?? '' ?>"
                                                class="block min-w-0 grow bg-transparent py-1.5 pr-3 pl-1 text-base text-white placeholder:text-gray-500 focus:outline-none sm:text-sm/6"/>
 
                                     </div>
@@ -29,9 +29,7 @@
                                 <label for="content" class="block text-sm/6 font-medium text-white">Content</label>
                                 <div class="mt-2">
                                     <textarea id="content" name="content" rows="3"
-                                              class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6">
-                                            <?= $content ?? '' ?>
-                                            </textarea>
+                                              class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"><?= $content ?? '' ?></textarea>
                                 </div>
                                 <?php if (isset($errors['content'])): ?>
                                     <p class="text-sm/6 text-red-500"><?= $errors['content'] ?></p>
@@ -53,4 +51,4 @@
             </form>
         </div>
     </main>
-<?php require "views/partials/footer.php" ?>
+<?php view("partials/footer.php") ?>

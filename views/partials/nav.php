@@ -19,7 +19,7 @@ $navStyle = function ($route) use ($activeNav, $defaultNav) {
                         <!-- Current: "bg-gray-950/50 text-white", Default: "text-gray-300 hover:bg-white/5 hover:text-white" -->
                         <a href="/" <?= $navStyle("/") ?>>Home</a>
                         <a href="/notes" <?= $navStyle("/notes") ?>>Notes</a>
-                        <a href="/create" <?= $navStyle("/create") ?>>Create</a>
+                        <a href="/notes/create" <?= $navStyle("/notes/create") ?>>Create</a>
                         <a href="/about" <?= $navStyle("/about") ?>>About</a>
                     </div>
                 </div>
