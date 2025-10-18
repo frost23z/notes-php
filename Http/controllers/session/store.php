@@ -7,20 +7,12 @@ use Core\Validator;
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-$errors = [];
+$form = new LoginForm();
 
-if (!Validator::email($email)) {
-    $errors['email'] = "Please enter a valid email address";
-}
-
-if (!Validator::string($password)) {
-    $errors['password'] = "Please enter a password";
-}
-
-if (!empty($errors)) {
+if (!$form->validate($email, $password)) {
     return view("session/create.view.php", [
         'heading' => "Log In",
-        'errors' => $errors
+        'errors' => $form->errors()
     ]);
 }
 
