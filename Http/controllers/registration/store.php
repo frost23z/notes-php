@@ -1,6 +1,7 @@
 <?php
 
 use Core\App;
+use Core\Authenticator;
 use Core\Database;
 use Core\Validator;
 
@@ -48,7 +49,8 @@ $db->query("INSERT INTO users (email, password) VALUES (:email, :password)", [
 
 $userId = $db->lastInsertId();
 
-login([
+$authenticator = new Authenticator();
+$authenticator->login([
     'id' => $userId,
     'email' => $email
 ]);

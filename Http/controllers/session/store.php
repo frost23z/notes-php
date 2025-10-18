@@ -1,8 +1,7 @@
 <?php
 
-use Core\App;
-use Core\Database;
-use Core\Validator;
+use Core\Authenticator;
+use Http\Forms\LoginForm;
 
 $email = $_POST['email'];
 $password = $_POST['password'];
@@ -16,31 +15,16 @@ if (!$form->validate($email, $password)) {
     ]);
 }
 
-$db = App::resolve(Database::class);
+$authenticator = new Authenticator();
 
-$user = $db->query("SELECT * FROM users WHERE email = :email", [
-    'email' => $email
-])->fetch();
+if (!$authenticator->attempt($email, $password)) {
+    $form->error('email', 'No matching account found for that email address and password');
 
-if (!$user) {
     return view("session/create.view.php", [
         'heading' => "Log In",
-        'errors' => [
-            'email' => "No account found with that email address"
-        ]
+        'errors' => $form->errors()
     ]);
 }
-
-if (!password_verify($password, $user['password'])) {
-    return view("session/create.view.php", [
-        'heading' => "Log In",
-        'errors' => [
-            'password' => "Incorrect password"
-        ]
-    ]);
-}
-
-login($user);
 
 header("Location: /notes");
 exit();
