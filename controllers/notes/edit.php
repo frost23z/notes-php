@@ -9,7 +9,7 @@ $id = $_GET['id'];
 
 $note = $db->query('SELECT * FROM notes WHERE id = :id', ['id' => $id])->fetchOrFail();
 
-authorize($note['user_id'] === 1);
+authorize($note['user_id'] === currentUser()['id']);
 
 view("notes/edit.view.php", [
     'heading' => "Edit Note",

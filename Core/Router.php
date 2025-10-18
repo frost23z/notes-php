@@ -13,14 +13,23 @@ class Router
         $this->add('GET', $uri, $controller);
     }
 
-    public function add($method, $uri, $controller): void
+    public function add($method, $uri, $controller)
     {
         $this->routes[] = [
             'method' => strtoupper($method),
             'uri' => $uri,
-            'controller' => $controller
+            'controller' => $controller,
+            'middleware' => null
         ];
 
+        return $this;
+    }
+
+    public function only($key)
+    {
+        $this->routes[array_key_last($this->routes)]['middleware'] = $key;
+
+        return $this;
     }
 
     public function post($uri, $controller): void
@@ -42,6 +51,7 @@ class Router
     {
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+                \Core\Middleware\Middleware::resolve($route['middleware']);
                 return require base_path($route['controller']);
             }
         }

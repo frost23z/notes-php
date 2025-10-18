@@ -10,7 +10,7 @@ $id = $_POST['id'];
 
 $note = $db->query('SELECT * FROM notes WHERE id = :id', ['id' => $id])->fetchOrFail();
 
-authorize($note['user_id'] === 1);
+authorize($note['user_id'] === currentUser()['id']);
 
 $errors = Validator::validateNoteData($_POST);
 
