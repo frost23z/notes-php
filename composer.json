@@ -1,0 +1,16 @@
+{
+  "name": "zayed/notes",
+  "authors": [
+    {
+      "name": "Shaiekh Zayed Bin Hasan",
+      "email": "zayed7h2@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Core\\": "Core/",
+      "Http\\": "Http/"
+    }
+  }
+}
