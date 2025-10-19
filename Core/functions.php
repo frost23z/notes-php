@@ -50,3 +50,14 @@ function currentUser()
 {
     return $_SESSION['user'] ?? null;
 }
+
+function old(string $key, $default = '')
+{
+    return \Core\Session::get('old')[$key] ?? $default;
+}
+
+function redirect(string $path): void
+{
+    header("Location: {$path}");
+    exit();
+}

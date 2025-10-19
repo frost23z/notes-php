@@ -5,7 +5,7 @@ namespace Http\Forms;
 use Core\ValidationException;
 use Core\Validator;
 
-class LoginForm
+class RegisterForm
 {
     protected array $errors = [];
     protected array $attributes;
@@ -25,9 +25,13 @@ class LoginForm
 
     public static function validate(array $attributes): self
     {
-        $instance = new static($attributes);
+        $form = new static($attributes);
 
-        return $instance->failed() ? $instance->throw() : $instance;
+        if ($form->failed()) {
+            $form->throw();
+        }
+
+        return $form;
     }
 
     public function failed(): bool
@@ -35,9 +39,9 @@ class LoginForm
         return !empty($this->errors);
     }
 
-    public function throw(): never
+    public function throw(): void
     {
-        ValidationException::throw($this->errors, $this->attributes);
+        throw new ValidationException($this->errors, $this->attributes);
     }
 
     public function error(string $field, string $message): self

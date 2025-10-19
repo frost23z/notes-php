@@ -3,57 +3,36 @@
 use Core\App;
 use Core\Authenticator;
 use Core\Database;
-use Core\Validator;
+use Http\Forms\RegisterForm;
 
-$email = $_POST['email'];
-$password = $_POST['password'];
-
-$errors = [];
-
-if (!Validator::email($email)) {
-    $errors['email'] = "Email is not valid";
-}
-
-if (!Validator::string($password, 6, 14)) {
-    $errors['password'] = "Password must be at least 6 characters and no more than 14 characters long";
-}
-
-if (!empty($errors)) {
-    return view("registration/create.view.php", [
-        'heading' => "Create Account",
-        'errors' => $errors
-    ]);
-}
+$form = RegisterForm::validate($_POST);
 
 $db = App::resolve(Database::class);
 
-$result = $db->query("SELECT * FROM users WHERE email = :email", [
-    'email' => $email
+// Check if email already exists
+$user = $db->query("SELECT * FROM users WHERE email = :email", [
+    'email' => $form->email
 ])->fetch();
 
-if ($result) {
-    $errors['email'] = "Email is already registered";
-
-    return view("registration/create.view.php", [
-        'heading' => "Create Account",
-        'errors' => $errors
-    ]);
+if ($user) {
+    $form->error('email', 'This email is already registered')->throw();
 }
 
-$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+// Create new user
+$hashedPassword = password_hash($form->password, PASSWORD_BCRYPT);
 
 $db->query("INSERT INTO users (email, password) VALUES (:email, :password)", [
-    'email' => $email,
+    'email' => $form->email,
     'password' => $hashedPassword
 ]);
 
 $userId = $db->lastInsertId();
 
+// Log in the new user
 $authenticator = new Authenticator();
 $authenticator->login([
     'id' => $userId,
-    'email' => $email
+    'email' => $form->email
 ]);
 
-header("Location: /notes");
-exit();
+redirect('/notes');

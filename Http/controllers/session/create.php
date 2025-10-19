@@ -1,6 +1,5 @@
 <?php
 
 view("session/create.view.php", [
-    'heading' => "Log In",
-    'errors' => []
+    'heading' => "Log In"
 ]);
