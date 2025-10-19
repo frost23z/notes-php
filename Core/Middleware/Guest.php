@@ -2,14 +2,15 @@
 
 namespace Core\Middleware;
 
+use Core\Router;
+use Core\Session;
 
 class Guest
 {
-    public function handle()
+    public function handle(): void
     {
-        if ($_SESSION['user'] ?? false) {
-            header('Location: /');
-            exit();
+        if (!Session::isGuest()) {
+            Router::redirect('/');
         }
     }
 }

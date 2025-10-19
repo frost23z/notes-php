@@ -2,13 +2,15 @@
 
 namespace Core\Middleware;
 
+use Core\Router;
+use Core\Session;
+
 class Auth
 {
-    public function handle()
+    public function handle(): void
     {
-        if (!$_SESSION['user'] ?? false) {
-            header('Location: /login');
-            exit();
+        if (Session::isGuest()) {
+            Router::redirect('/login');
         }
     }
 }
