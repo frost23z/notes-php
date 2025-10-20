@@ -16,7 +16,7 @@ class Router
     #[NoReturn]
     public static function redirect(string $path, bool $replace = true, int $response_code = 0): void
     {
-        header("Location: {$path}", $replace, $response_code);
+        header("Location: $path", $replace, $response_code);
         exit();
     }
 
