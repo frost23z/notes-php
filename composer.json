@@ -6,11 +6,23 @@
       "email": "zayed7h2@gmail.com"
     }
   ],
-  "require": {},
   "autoload": {
     "psr-4": {
       "Core\\": "Core/",
       "Http\\": "Http/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "pestphp/pest": "^4.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
     }
   }
 }
