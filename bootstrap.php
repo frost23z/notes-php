@@ -3,18 +3,22 @@
 use Core\App;
 use Core\Container;
 use Core\Database;
+use Core\Repositories\NoteRepository;
+use Core\Repositories\UserRepository;
 
 $container = new Container();
 
-$container->bind('Core\Database', function () {
+$container->bind(Database::class, function () {
     $config = require base_path("config.php");
     return new Database($config['db']);
 });
 
-try {
-    $db = $container->resolve('Core\Database');
-} catch (Exception $e) {
-    die($e->getMessage());
-}
+$container->bind(NoteRepository::class, function () {
+    return new NoteRepository();
+});
+
+$container->bind(UserRepository::class, function () {
+    return new UserRepository();
+});
 
 App::setContainer($container);
