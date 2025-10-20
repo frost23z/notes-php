@@ -20,7 +20,7 @@ class Database
         ]);
     }
 
-    public function query($query, $params = [])
+    public function query($query, $params = []): static
     {
         $this->statement = $this->connection->prepare($query);
         $this->statement->execute($params);
@@ -33,23 +33,23 @@ class Database
         $result = $this->fetch();
 
         if (!$result) {
-            abort(Response::HTTP_NOT_FOUND);
+            abort();
         }
 
         return $result;
     }
 
-    public function fetch()
+    public function fetch(): array|false
     {
         return $this->statement->fetch();
     }
 
-    public function fetchAll()
+    public function fetchAll(): array
     {
         return $this->statement->fetchAll();
     }
 
-    public function lastInsertId()
+    public function lastInsertId(): false|string
     {
         return $this->connection->lastInsertId();
     }
