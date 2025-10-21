@@ -84,12 +84,32 @@ class Router
     public function route($uri, $method)
     {
         foreach ($this->routes as $route) {
+            // Check for exact match first
             if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
+                Middleware::resolve($route['middleware']);
+                return require base_path("Http/controllers/{$route['controller']}");
+            }
+
+            // Check for dynamic route match (e.g., /notes/:id/title)
+            if ($this->matchDynamicRoute($route['uri'], $uri) && $route['method'] === strtoupper($method)) {
                 Middleware::resolve($route['middleware']);
                 return require base_path("Http/controllers/{$route['controller']}");
             }
         }
         $this->abort();
+    }
+
+    /**
+     * Match a dynamic route with parameters (e.g., /notes/:id/title matches /notes/123/title)
+     */
+    protected function matchDynamicRoute(string $routeUri, string $requestUri): bool
+    {
+        // Convert route pattern to regex
+        // Replace :param with regex to match digits
+        $pattern = preg_replace('/:\w+/', '(\d+)', $routeUri);
+        $pattern = '#^' . $pattern . '$#';
+
+        return (bool)preg_match($pattern, $requestUri);
     }
 
     /**

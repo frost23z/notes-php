@@ -1,32 +1,22 @@
 <?php
 
 use Core\App;
-use Core\Database;
-use Core\Validator;
+use Core\Repositories\NoteRepository;
+use Core\Router;
+use Http\Forms\NoteForm;
 
-$db = App::resolve(Database::class);
+$form = NoteForm::validate($_POST);
+
+$noteRepo = App::resolve(NoteRepository::class);
 
 $id = $_POST['id'];
 
-$note = $db->query('SELECT * FROM notes WHERE id = :id', ['id' => $id])->fetchOrFail();
+$note = $noteRepo->findById($id);
 
-authorize($note['user_id'] === currentUser()['id']);
+authorizeNoteOwner($note);
 
-$errors = Validator::validateNoteData($_POST);
+// Title is optional now, defaults to '' which triggers auto-generation
+$noteRepo->update($id, $form->title ?? '', $form->content);
 
-if (empty($errors)) {
-    $db->query("UPDATE notes SET title = :title, content = :content WHERE id = :id", [
-        'title' => $_POST['title'],
-        'content' => $_POST['content'],
-        'id' => $id
-    ]);
-
-    header("Location: /notes/show?id={$id}");
-    exit();
-}
-
-view("notes/edit.view.php", [
-    'heading' => "Edit Note",
-    'note' => $note,
-    'errors' => $errors
-]);
+success('Note updated successfully!');
+Router::redirect("/notes/show?id={$id}");

@@ -1,18 +1,16 @@
 <?php
 
 use Core\Response;
+use Core\Session;
+use JetBrains\PhpStorm\NoReturn;
 
+#[NoReturn]
 function dd($value)
 {
     echo "<pre>";
     var_dump($value);
     echo "</pre>";
     die;
-}
-
-function urlIs($value)
-{
-    return parse_url($_SERVER['REQUEST_URI'])['path'] === $value;
 }
 
 function authorize($condition, $status = Response::HTTP_FORBIDDEN): bool
@@ -23,6 +21,7 @@ function authorize($condition, $status = Response::HTTP_FORBIDDEN): bool
     return true;
 }
 
+#[NoReturn]
 function abort($code = Response::HTTP_NOT_FOUND)
 {
     http_response_code($code);
@@ -35,29 +34,41 @@ function base_path($path = ''): string
     return BASE_PATH . ltrim($path, '/');
 }
 
-function view($path, $attributes = [])
+function view($path, $attributes = []): void
 {
     extract($attributes);
     require base_path("views/" . $path);
 }
 
-function isGuest(): bool
-{
-    return !isset($_SESSION['user']);
-}
-
-function currentUser()
-{
-    return $_SESSION['user'] ?? null;
-}
-
 function old(string $key, $default = '')
 {
-    return \Core\Session::get('old')[$key] ?? $default;
+    return Session::get('old')[$key] ?? $default;
 }
 
-function redirect(string $path): void
+/**
+ * Flash message helpers
+ */
+function success(string $message): void
 {
-    header("Location: {$path}");
-    exit();
+    Session::flash('success', $message);
+}
+
+function error(string $message): void
+{
+    Session::flash('error', $message);
+}
+
+function warning(string $message): void
+{
+    Session::flash('warning', $message);
+}
+
+function info(string $message): void
+{
+    Session::flash('info', $message);
+}
+
+function authorizeNoteOwner(array $note): void
+{
+    authorize($note['user_id'] === Session::user()['id']);
 }

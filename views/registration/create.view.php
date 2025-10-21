@@ -20,8 +20,6 @@
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-gray-900 px-8 py-10 shadow-xl ring-1 ring-gray-800 sm:rounded-lg">
-                <?php view("partials/flash-message.php") ?>
-
                 <form action="/register" method="POST" class="space-y-6">
                     <?php view("partials/form-input.php", [
                             'name' => 'email',

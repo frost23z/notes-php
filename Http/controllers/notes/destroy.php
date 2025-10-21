@@ -1,17 +1,16 @@
 <?php
 
 use Core\App;
-use Core\Database;
+use Core\Repositories\NoteRepository;
+use Core\Router;
 
-$db = App::resolve(Database::class);
+$noteRepo = App::resolve(NoteRepository::class);
 
-$id = $_GET['id'];
+$note = $noteRepo->findById($_GET['id']);
 
-$note = $db->query('SELECT * FROM notes WHERE id = :id', ['id' => $id])->fetchOrFail();
+authorizeNoteOwner($note);
 
-authorize($note['user_id'] === currentUser()['id']);
+$noteRepo->delete($note['id']);
 
-$db->query('DELETE FROM notes WHERE id = :id', ['id' => $id]);
-
-header('Location: /notes');
-exit();
+success('Note deleted successfully!');
+Router::redirect('/notes');

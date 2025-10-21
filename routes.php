@@ -18,3 +18,7 @@ $router->add('get', '/notes/show', 'notes/show.php')->only('auth');       // Sho
 $router->add('get', '/notes/edit', 'notes/edit.php')->only('auth');       // Show edit form (uses ?id=)
 $router->add('patch', '/notes', 'notes/update.php')->only('auth');        // Update note
 $router->add('delete', '/notes', 'notes/destroy.php')->only('auth');      // Delete note
+
+// AJAX endpoints for inline editing
+$router->add('patch', '/notes/:id/title', 'notes/update-title.php')->only('auth');  // Update title via AJAX
+$router->add('delete', '/notes/:id', 'notes/delete-ajax.php')->only('auth');        // Delete note via AJAX

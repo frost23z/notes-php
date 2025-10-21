@@ -1,56 +1,37 @@
-<?php view("partials/header.php") ?>
-<?php view("partials/nav.php") ?>
-<?php view("partials/banner.php", ['heading' => $heading]) ?>
-    <main>
+<?php view("partials/app-header.php") ?>
 
-        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <form method="POST" action="/notes/update">
-                <input type="hidden" name="_method" value="PATCH">
-                <input type="hidden" name="id" value="<?= $note['id'] ?>">
-                <div class="space-y-12">
-                    <div class="border-b border-white/10 pb-12">
+    <div class="flex h-full">
+        <?php view("partials/sidebar.php", compact('notes', 'currentNoteId')) ?>
 
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Toolbar (h-16 to match sidebar header/footer) -->
+            <div class="flex h-16 items-center justify-between px-6 lg:px-8 border-b border-gray-800/80 bg-gray-900/50 backdrop-blur-sm">
+                <!-- Mobile Menu Button -->
+                <label for="sidebar-toggle"
+                       class="lg:hidden text-gray-400 hover:text-white p-2 rounded-lg transition-colors duration-150 mr-2 cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </label>
 
-                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div class="col-span-full">
-                                <label for="title" class="block text-sm/6 font-medium text-white">Title</label>
-                                <div class="mt-2">
-                                    <div class="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-500">
-                                        <input id="title" type="text" name="title" placeholder="Enter note title"
-                                               value="<?= htmlspecialchars($note['title']) ?>"
-                                               class="block min-w-0 grow bg-transparent py-1.5 pr-3 pl-1 text-base text-white placeholder:text-gray-500 focus:outline-none sm:text-sm/6"/>
+                <h1 class="text-xl lg:text-2xl font-semibold text-white">Edit Note</h1>
+            </div>
 
-                                    </div>
-                                    <?php if (isset($errors['title'])): ?>
-                                        <p class="text-sm/6 text-red-500"><?= $errors['title'] ?></p>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-
-                            <div class="col-span-full">
-                                <label for="content" class="block text-sm/6 font-medium text-white">Content</label>
-                                <div class="mt-2">
-                                    <textarea id="content" name="content" rows="3"
-                                              class="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"><?= htmlspecialchars($note['content']) ?></textarea>
-                                </div>
-                                <?php if (isset($errors['content'])): ?>
-                                    <p class="text-sm/6 text-red-500"><?= $errors['content'] ?></p>
-                                <?php endif; ?>
-                            </div>
-
-
-                        </div>
-                    </div>
+            <!-- Form Content -->
+            <div class="flex-1 overflow-y-auto px-6 lg:px-8 py-6">
+                <div class="max-w-5xl mx-auto h-full">
+                    <?php view("partials/note-form.php", [
+                            'action' => '/notes',
+                            'method' => 'PATCH',
+                            'note' => $note,
+                            'submitText' => 'Update Note',
+                            'cancelUrl' => "/notes/show?id={$note['id']}"
+                    ]) ?>
                 </div>
-
-                <div class="mt-6 flex items-center justify-end gap-x-6">
-                    <button type="button" class="text-sm/6 font-semibold text-white">Cancel</button>
-                    <button type="submit"
-                            class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                        Save
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </main>
-<?php view("partials/footer.php") ?>
+    </div>
+
+<?php view("partials/app-footer.php") ?>

@@ -2,31 +2,22 @@
 
 use Core\App;
 use Core\Authenticator;
-use Core\Database;
+use Core\Repositories\UserRepository;
+use Core\Router;
 use Http\Forms\RegisterForm;
 
 $form = RegisterForm::validate($_POST);
 
-$db = App::resolve(Database::class);
+$userRepo = App::resolve(UserRepository::class);
 
 // Check if email already exists
-$user = $db->query("SELECT * FROM users WHERE email = :email", [
-    'email' => $form->email
-])->fetch();
-
-if ($user) {
+if ($userRepo->existsByEmail($form->email)) {
     $form->error('email', 'This email is already registered')->throw();
 }
 
 // Create new user
 $hashedPassword = password_hash($form->password, PASSWORD_BCRYPT);
-
-$db->query("INSERT INTO users (email, password) VALUES (:email, :password)", [
-    'email' => $form->email,
-    'password' => $hashedPassword
-]);
-
-$userId = $db->lastInsertId();
+$userId = $userRepo->create($form->email, $hashedPassword);
 
 // Log in the new user
 $authenticator = new Authenticator();
@@ -35,4 +26,4 @@ $authenticator->login([
     'email' => $form->email
 ]);
 
-redirect('/notes');
+Router::redirect('/notes');

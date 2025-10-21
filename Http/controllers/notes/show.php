@@ -1,17 +1,20 @@
 <?php
 
 use Core\App;
-use Core\Database;
+use Core\Repositories\NoteRepository;
+use Core\Session;
 
-$db = App::resolve(Database::class);
+$noteRepo = App::resolve(NoteRepository::class);
 
-$id = $_GET['id'];
+$note = $noteRepo->findById($_GET['id']);
 
-$note = $db->query('SELECT * FROM notes WHERE id = :id', ['id' => $id])->fetchOrFail();
+authorizeNoteOwner($note);
 
-authorize($note['user_id'] === currentUser()['id']);
+$notes = $noteRepo->findAll(Session::user()['id']);
 
 view("notes/show.view.php", [
     'heading' => "Note Details",
-    'note' => $note
+    'note' => $note,
+    'notes' => $notes,
+    'currentNoteId' => $note['id']
 ]);

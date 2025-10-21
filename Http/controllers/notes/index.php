@@ -1,15 +1,15 @@
 <?php
 
 use Core\App;
-use Core\Database;
+use Core\Repositories\NoteRepository;
+use Core\Session;
 
-$db = App::resolve(Database::class);
+$noteRepo = App::resolve(NoteRepository::class);
 
-$currentUserId = currentUser()['id'];
-
-$notes = $db->query('SELECT * FROM notes where user_id = :user_id', ['user_id' => $currentUserId])->fetchAll();
+$notes = $noteRepo->findAll(Session::user()['id']);
 
 view("notes/index.view.php", [
     'heading' => "My Notes",
-    'notes' => $notes
+    'notes' => $notes,
+    'currentNoteId' => null
 ]);

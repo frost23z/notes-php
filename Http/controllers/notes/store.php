@@ -1,27 +1,17 @@
 <?php
 
 use Core\App;
-use Core\Database;
-use Core\Validator;
+use Core\Repositories\NoteRepository;
+use Core\Router;
+use Core\Session;
+use Http\Forms\NoteForm;
 
-$db = App::resolve(Database::class);
+$form = NoteForm::validate($_POST);
 
-$errors = Validator::validateNoteData($_POST);
-$title = $_POST['title'];
-$content = $_POST['content'];
+$noteRepo = App::resolve(NoteRepository::class);
 
-if (empty($errors)) {
-    $db->query("INSERT INTO notes (title, content, user_id) VALUES (:title, :content, :user_id)", [
-        'title' => $title,
-        'content' => $content,
-        'user_id' => currentUser()['id']
-    ]);
+// Title is optional now, defaults to '' which triggers auto-generation
+$noteRepo->create($form->title ?? '', $form->content, Session::user()['id']);
 
-    header("Location: /notes");
-    exit();
-}
-
-view("notes/create.view.php", [
-    'heading' => "Create Note",
-    'errors' => $errors
-]);
+success('Note created successfully!');
+Router::redirect('/notes');
